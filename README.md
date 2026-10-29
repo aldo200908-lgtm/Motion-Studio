@@ -1,6 +1,6 @@
 # Motion Studio 3.0 — Android + HyperFrames 🎬
 
-Crea videos animados desde un Android con GitHub Actions, **sin computadora, Codex ni claves de IA**.
+Crea videos animados con escenas relacionadas con tu guion desde un Android con GitHub Actions, **sin computadora, Codex ni claves de IA**.
 
 ## Motores disponibles
 
@@ -12,6 +12,21 @@ Crea videos animados desde un Android con GitHub Actions, **sin computadora, Cod
 HyperFrames se usa **de verdad**: ejecutamos el binario oficial de npm para interpretar una composición HTML creada por Motion Studio y renderizarla a MP4. **No** significa que los presets oficiales o todas las skills del repositorio original ya estén instaladas. Tampoco genera automáticamente escenas a partir de un prompt libre de IA.
 
 El trabajo usa el CLI HyperFrames v0.8.216 y GSAP 3.14.2 (versiones fijadas en el workflow para evitar cambios inesperados).
+
+### Guion con visuales literales (3.1)
+
+En el formulario web hay un campo **Guion / narración** (máximo 480 caracteres). Se divide por frases y crea una escena por cada segmento, con duración aproximada repartida automáticamente; las imágenes corresponden a las palabras de cada frase.
+
+**Ejemplo:** `Claude es similar a ChatGPT. Codex ayuda a programar. GitHub Actions renderiza el video.`
+
+- Primera escena: logos de Claude y ChatGPT enfrentados, etiqueta «SIMILAR».
+- Segunda escena: logo y tarjeta de Codex.
+- Tercera escena: logo y tarjeta de GitHub.
+- Para temas conocidos sin marcas (web, voz, programación, video, ventas, investigación), se representa un concepto visual concreto y no solamente un fondo abstracto.
+- Los logos SVG provienen del paquete **simple-icons@16.36.0**, copiados localmente para renderizar sin depender de un CDN. Si falta uno, se usa una tarjeta con siglas.
+- El motor produce también una entrada `scene_plan` en `metadata.json` y una captura PNG por escena.
+
+**Limitación:** el campo «Guion» todavía **no genera una voz narrada ni sincroniza audio de voz palabra por palabra**. Es sincronización *aproximada por frase* con tiempos repartidos. Para una sincronización real se necesitarán grabación o TTS, marcas temporales y alineación con el audio.
 
 ### Características
 
@@ -45,6 +60,7 @@ Si eliges **classic**, se usa el renderizador antiguo.
 
 - [docs/index.html](docs/index.html): editor móvil estático (sin claves privadas).
 - [scripts/hyperframes_build.py](scripts/hyperframes_build.py): validación de parámetros, creación de HTML+GSAP y efectos de audio.
+- [scripts/literal_scenes.py](scripts/literal_scenes.py): detección de marcas, logos locales y comparaciones visuales por frase.
 - [.github/workflows/render.yml](.github/workflows/render.yml): ejecución real de HyperFrames CLI, FFmpeg y extracción de storyboards.
 - [scripts/motion_v2.py](scripts/motion_v2.py): motor clásico conservado intacto.
 
