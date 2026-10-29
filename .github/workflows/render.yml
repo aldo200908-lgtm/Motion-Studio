@@ -15,6 +15,10 @@ on:
         description: "Texto secundario"
         required: true
         default: "Diseño web, apps y sistemas"
+      script:
+        description: "Guion dividido en frases. Cada frase se ilustra con logos, comparaciones o ejemplos."
+        required: false
+        default: "Claude es similar a ChatGPT. Codex ayuda a programar. GitHub Actions renderiza el video."
       cta:
         description: "Llamada a la acción"
         required: true
@@ -47,6 +51,7 @@ on:
     paths:
       - ".github/workflows/render.yml"
       - "scripts/hyperframes_build.py"
+      - "scripts/literal_scenes.py"
 permissions:
   contents: read
   issues: write
@@ -64,6 +69,7 @@ jobs:
       ENGINE: ${{ github.event_name == 'push' && 'hyperframes' || inputs.engine }}
       TITLE: ${{ github.event_name == 'push' && 'Motion Studio con HyperFrames' || inputs.title }}
       SUBTITLE: ${{ github.event_name == 'push' && 'Animaciones HTML GSAP FFmpeg' || inputs.subtitle }}
+      SCRIPT: ${{ inputs.script }}
       CTA: ${{ github.event_name == 'push' && 'Hecho desde Android' || inputs.cta }}
       STYLE: ${{ github.event_name == 'push' && 'high-energy' || inputs.style }}
       FORMAT: ${{ github.event_name == 'push' && 'horizontal' || inputs.format }}
@@ -97,7 +103,7 @@ jobs:
       - name: Install HyperFrames and GSAP
         if: steps.request.outputs.engine == 'hyperframes'
         run: |
-          npm install --no-save --no-audit --no-fund hyperframes@0.8.216 gsap@3.14.2
+          npm install --no-save --no-audit --no-fund hyperframes@0.8.216 gsap@3.14.2 simple-icons@16.36.0
           ./node_modules/.bin/hyperframes --version
       - name: Build HyperFrames HTML composition
         if: steps.request.outputs.engine == 'hyperframes'
@@ -124,8 +130,10 @@ jobs:
           import json, subprocess
           from pathlib import Path
           duration = json.loads(Path("output/metadata.json").read_text())["duration"]
-          for n in range(4):
-              t = round(duration * (n+.5) / 4, 3)
+          scenes = json.loads(Path("output/metadata.json").read_text()).get("scene_plan", [])
+          count = len(scenes) or 4
+          for n in range(count):
+              t = round(duration * (n+.5) / count, 3)
               subprocess.run(["ffmpeg","-hide_banner","-loglevel","error","-y",
                               "-ss",str(t),"-i","output/video.mp4",
                               "-frames:v","1",f"output/storyboard-{n+1:02d}.png"],check=True)
