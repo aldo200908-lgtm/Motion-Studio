@@ -69,7 +69,7 @@ jobs:
       FORMAT: ${{ github.event_name == 'push' && 'horizontal' || inputs.format }}
       ACCENT: ${{ github.event_name == 'push' && '#FF7A00' || inputs.accent }}
       DURATION: ${{ github.event_name == 'push' && '6' || inputs.duration }}
-      SOUND: ${{ github.event_name == 'push' && 'false' || inputs.sound }}
+      SOUND: ${{ github.event_name == 'push' && 'false' || toJSON(inputs.sound) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
