@@ -1,0 +1,47 @@
+name: Render Motion Studio
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: Texto principal
+        required: true
+        default: Tu negocio merece una web
+      subtitle:
+        description: Texto secundario
+        required: true
+        default: Diseño web profesional
+      format:
+        description: Formato
+        type: choice
+        options: [vertical, horizontal]
+        default: vertical
+      duration:
+        description: Duracion en segundos (5-20)
+        type: number
+        default: 12
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python3 -m pip install Pillow
+      - name: Render MP4
+        env:
+          TITLE: ${{ inputs.title }}
+          SUBTITLE: ${{ inputs.subtitle }}
+          FORMAT: ${{ inputs.format }}
+          DURATION: ${{ inputs.duration }}
+        run: python3 scripts/render.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: motion-studio-video
+          path: output/video.mp4
+          if-no-files-found: error
+          retention-days: 7
