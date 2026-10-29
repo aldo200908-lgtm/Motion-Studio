@@ -15,6 +15,7 @@ import struct
 import sys
 import wave
 from pathlib import Path
+from literal_scenes import make_scenes, split_script
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / "hyperframes-project"
@@ -31,6 +32,7 @@ def read_config():
         "engine": os.getenv("ENGINE") or "hyperframes",
         "title": os.getenv("TITLE") or "Tu negocio merece una web",
         "subtitle": os.getenv("SUBTITLE") or "Diseño web, apps y sistemas",
+        "script": os.getenv("SCRIPT") or "",
         "cta": os.getenv("CTA") or "Cotiza por WhatsApp",
         "style": os.getenv("STYLE") or "high-energy",
         "format": os.getenv("FORMAT") or "vertical",
@@ -60,8 +62,9 @@ def read_config():
         if "engine" not in data:
             cfg["engine"] = "classic"
     if event_name == "push":
-        cfg.update(engine="hyperframes", title="Motion Studio con HyperFrames",
-                   subtitle="Animaciones HTML + GSAP + FFmpeg",
+        cfg.update(engine="hyperframes", title="Claude vs ChatGPT",
+                   subtitle="Comparación de herramientas de IA",
+                   script="Claude es similar a ChatGPT. Codex ayuda a programar. GitHub Actions renderiza el video.",
                    cta="Hecho desde Android", style="high-energy", format="horizontal",
                    accent="#FF7A00", duration=6, sound=False)
     for key in ("engine", "style", "format"):
@@ -70,8 +73,8 @@ def read_config():
         raise ValueError("Unknown rendering engine")
     if cfg["style"] not in STYLES or cfg["format"] not in FORMATS:
         raise ValueError("Unknown style or format")
-    for key in ("title", "subtitle", "cta"):
-        cfg[key] = str(cfg[key]).strip()[:130]
+    for key in ("title", "subtitle", "cta", "script"):
+        cfg[key] = str(cfg[key]).strip()[:480 if key == "script" else 130]
     if not cfg["title"]:
         raise ValueError("Title must not be empty")
     cfg["accent"] = str(cfg["accent"]).upper()
@@ -107,7 +110,7 @@ def composition(cfg):
     w, h = FORMATS[cfg["format"]]
     accent = cfg["accent"]
     duration = cfg["duration"]
-    beat = duration / 4
+    beat = duration / len(split_script(cfg))
     style = cfg["style"]
     esc = lambda text: html.escape(text, quote=True)
     def clip(index, tag, markup):
@@ -118,26 +121,7 @@ def composition(cfg):
                 '" data-track-index="0"><div class="scene-content">' +
                 '<div class="eyebrow">' + esc(tag) + '</div>' + markup +
                 '</div></section>')
-    scenes = [
-        clip(0, "01 / EL GANCHO",
-             '<div class="pill">MOTION STUDIO</div><h1 class="headline">' + esc(cfg["title"]) +
-             '</h1><div class="hero-underline"></div><p class="micro">IDEAS QUE COBRAN VIDA</p>'),
-        clip(1, "02 / LA SOLUCIÓN",
-             '<h2 class="headline">' + esc(cfg["subtitle"] or "Una experiencia distinta") +
-             '</h2><div class="device"><div class="device-top"><span></span><span></span><span></span></div>' +
-             '<div class="device-title">TU NEGOCIO</div><div class="device-bar"></div>' +
-             '<div class="device-blocks"><i></i><i></i><i></i></div></div>'),
-        clip(2, "03 / EL RESULTADO",
-             '<div class="mini-label">RESULTADOS EN MOVIMIENTO</div><h2 class="headline">Más impacto.<br>' +
-             '<span class="highlight">Más atención.</span></h2><div class="stats">' +
-             '<div class="stat"><strong>01</strong><span>IDEA</span></div>' +
-             '<div class="stat"><strong>02</strong><span>DISEÑO</span></div>' +
-             '<div class="stat"><strong>03</strong><span>ACCIÓN</span></div></div>'),
-        clip(3, "04 / EL SIGUIENTE PASO",
-             '<div class="last-symbol">✦</div><h2 class="headline">¿Empezamos?</h2><div class="cta">' +
-             esc(cfg["cta"] or "Contáctanos") + '<span>↗</span></div>' +
-             '<p class="micro">TU PRÓXIMO PROYECTO EMPIEZA AQUÍ</p>'),
-    ]
+    scenes, visual_plan = make_scenes(cfg, clip, ROOT, PROJECT)
     text_size = 64 if cfg["format"] == "vertical" else (68 if cfg["format"] == "square" else 70)
     if len(cfg["title"]) > 45:
         text_size = int(text_size * .76)
@@ -194,7 +178,26 @@ body{font-family:Arial,Helvetica,sans-serif}
 .shape.a{width:420px;height:420px;left:-150px;top:12%}.shape.b{width:350px;height:350px;right:-155px;bottom:10%}
 #root.clean .shape{border-radius:15px;opacity:.08}
 #root.engaging .shape{border-radius:30%;transform:rotate(35deg)}
-""".replace("VAR_W", str(w)).replace("VAR_H", str(h)).replace("VAR_TEXT", str(text_size))
+
+/* Literal foreground for each narrated clause: logo, comparison, or semantic illustration. */
+.spoken-title{max-width:96%;font-size:VAR_TITLEpx;font-weight:900;line-height:1.11;letter-spacing:-1.5px;overflow-wrap:anywhere}
+.literal-visual{width:94%;min-height:185px;display:flex;align-items:center;justify-content:center;gap:14px}
+.brand-card{flex:1;min-width:0;max-width:245px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;border-radius:22px;padding:22px 14px;min-height:172px;background:VAR_SURFACE;border:2px solid VAR_BORDER;box-shadow:0 14px 35px #0002}
+.brand-card strong{font-size:23px;color:VAR_FG;overflow-wrap:anywhere}
+.logo-box{width:85px;height:85px;border-radius:20px;background:#fff;display:grid;place-items:center;padding:17px}
+.logo-box img{width:100%;height:100%;object-fit:contain}
+.fallback-logo{color:#181818;font-size:24px;font-weight:900}
+.relation{flex-shrink:0;font-size:22px;font-weight:900;color:VAR_ACC;padding:12px;border-radius:100px;background:VAR_SURFACE;border:1px solid VAR_BORDER}
+.concept{width:min(90%,430px);background:VAR_SURFACE;border:2px solid VAR_BORDER;border-radius:24px;padding:25px;display:flex;align-items:center;justify-content:center;gap:18px}
+.concept-symbol{width:110px;height:110px;border-radius:18px;background:VAR_ACC;color:#111;font-size:64px;display:grid;place-items:center}
+.concept strong{font-size:21px;color:VAR_FG}
+.scene-counter{font-size:13px;font-weight:700;letter-spacing:2px;color:VAR_MUTED}
+#root[data-format="vertical"] .literal-visual.pair{flex-direction:column;gap:9px}
+#root[data-format="vertical"] .brand-card{min-height:130px;width:min(86%,350px);flex:none}
+#root[data-format="vertical"] .logo-box{width:65px;height:65px;padding:13px}
+#root[data-format="vertical"] .spoken-title{font-size:34px}
+#root[data-format="vertical"] .concept-symbol{width:82px;height:82px;font-size:46px}
+""".replace("VAR_W", str(w)).replace("VAR_H", str(h)).replace("VAR_TEXT", str(text_size)).replace("VAR_TITLE", str(round(text_size*.7)))
     for key, value in (("VAR_BG", bg), ("VAR_FG", fg), ("VAR_MUTED", muted),
                        ("VAR_SURFACE", surface), ("VAR_BORDER", border),
                        ("VAR_ACC22", accent + "22"), ("VAR_ACC11", accent + "11"),
@@ -202,13 +205,13 @@ body{font-family:Arial,Helvetica,sans-serif}
         stylesheet = stylesheet.replace(key, value)
     # The GSAP timeline is registered by composition id, paused for frame seeking.
     animations = []
-    for idx in range(4):
+    for idx in range(len(scenes)):
         begin = round(idx * beat, 4)
         slide = ".scene.s" + str(idx)
         animations.extend([
             "tl.fromTo(" + json.dumps(slide + " .eyebrow") +
             ',{autoAlpha:0,y:25},{autoAlpha:1,y:0,duration:.40,ease:"power3.out"},' + str(begin + .08) + ");",
-            "tl.fromTo(" + json.dumps(slide + " .headline") +
+            "tl.fromTo(" + json.dumps(slide + " .spoken-title") +
             ',{autoAlpha:0,y:100,scale:.88},{autoAlpha:1,y:0,scale:1,duration:.72,ease:"back.out(1.35)"},' +
             str(begin + .16) + ");",
             "tl.fromTo(" + json.dumps(slide + " .scene-content") +
@@ -216,12 +219,7 @@ body{font-family:Arial,Helvetica,sans-serif}
             "tl.to(" + json.dumps(slide + " .scene-content") +
             ',{autoAlpha:0,y:-38,duration:.3,ease:"power2.in"},' + str(begin + beat - .34) + ");",
         ])
-        decorative = [
-            [".pill", ".hero-underline", ".micro"],
-            [".device"],
-            [".stats", ".mini-label"],
-            [".last-symbol", ".cta", ".micro"]
-        ][idx]
+        decorative = [".literal-visual", ".scene-counter"]
         for key in decorative:
             animations.append(
                 "tl.fromTo(" + json.dumps(slide + " " + key) +
