@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<title>Motion Studio | Crear video</title>
+<style>
+:root{color-scheme:dark;--orange:#ff7a00;--ink:#0d1221;--panel:#171d2e;--line:#2c3447;--muted:#a3adbf}
+*{box-sizing:border-box}body{margin:0;background:var(--ink);color:#fafafc;font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px}
+header{max-width:1100px;margin:auto;padding:24px 22px 12px;display:flex;align-items:center;gap:12px;justify-content:space-between}
+.brand{font-weight:900;letter-spacing:.03em;font-size:17px}.brand b{color:var(--orange)}.chip{border:1px solid var(--line);color:var(--muted);border-radius:30px;font-size:12px;padding:7px 11px}
+main{max-width:1100px;margin:0 auto;padding:14px 22px 40px;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+h1{font-size:clamp(29px,4vw,44px);letter-spacing:-.04em;line-height:1.09;margin:12px 0 9px}
+.intro{color:var(--muted);line-height:1.55;max-width:520px;margin-bottom:24px}
+.panel{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:23px}
+label{display:block;font-size:13px;font-weight:700;margin:17px 0 8px}
+input,select{appearance:none;width:100%;padding:13px 14px;border:1px solid #3c475e;border-radius:12px;background:#101626;color:white;font:inherit;outline-offset:2px}
+input:focus,select:focus{border-color:var(--orange)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fields>*{min-width:0}input[type=color]{padding:3px;height:47px;cursor:pointer}
+.check{display:flex;align-items:center;gap:10px;margin:15px 0}.check input{width:20px;height:20px;accent-color:var(--orange)}
+button,.button{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;width:100%;border:0;border-radius:12px;background:var(--orange);color:#151515;padding:15px 18px;font-weight:800;font-size:15px;cursor:pointer}
+.secondary{border:1px solid #465269;background:transparent;color:#ebedf2;margin-top:10px}
+.note{color:var(--muted);font-size:12px;line-height:1.6;margin-top:16px}
+.preview-wrap{position:sticky;top:20px}.preview-card{background:#121727;border:1px solid var(--line);border-radius:22px;padding:20px;text-align:center}
+h2{font-size:15px;text-align:left;font-weight:750;margin:0 0 15px}
+.preview{--local-accent:#ff7a00;position:relative;overflow:hidden;margin:0 auto;aspect-ratio:9/16;width:min(100%,280px);background:linear-gradient(150deg,#0a1020,#111c32);border:1px solid #364153;border-radius:18px;display:grid;place-items:center;isolation:isolate;transition:width .2s,aspect-ratio .2s,background .2s}
+.preview.horizontal{aspect-ratio:16/9;width:100%;max-width:430px}.preview.square{aspect-ratio:1/1;width:min(100%,360px)}
+.orbit{position:absolute;width:67%;aspect-ratio:1/1;border:2px solid var(--local-accent);opacity:.35;border-radius:50%;animation:spin 9s linear infinite;transform-origin:70% 65%;left:18%;top:18%}
+.orbit.two{width:35%;top:53%;left:49%;animation-direction:reverse}
+#preview.clean{background:linear-gradient(150deg,#f3f3ed,#fff);color:#161e29}
+#preview.clean .orbit{opacity:.15}#preview.engaging .orbit{border-radius:16%;transform:rotate(35deg)}
+.preview-text{z-index:1;padding:22px;width:100%;overflow-wrap:anywhere;animation:rise 3s ease infinite}
+.preview-text strong{display:block;font-size:clamp(18px,3.5vw,28px);line-height:1.18;letter-spacing:-.04em}
+.preview-text small{display:block;font-size:clamp(10px,1.5vw,14px);opacity:.76;margin-top:14px}
+.preview-tag{position:absolute;left:18px;top:18px;font-size:9px;letter-spacing:.15em;z-index:1}
+.preview-foot{position:absolute;bottom:22px;left:22px;right:22px;height:5px;border-radius:20px;background:var(--local-accent);z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes rise{0%{opacity:.2;transform:translateY(15px)}30%,80%{opacity:1;transform:translateY(0)}100%{opacity:.2;transform:translateY(-7px)}}
+details{margin-top:13px;text-align:left;border-top:1px solid var(--line);padding-top:12px}summary{cursor:pointer;font-weight:700}code{color:#ffbd80}
+footer{max-width:1100px;margin:auto;color:var(--muted);font-size:12px;padding:0 22px 24px}
+@media(max-width:760px){main{grid-template-columns:1fr;gap:20px}.preview-wrap{position:static;order:-1}.preview{width:min(100%,210px)}.preview.horizontal{width:100%}.panel{padding:20px}header{padding:17px 20px 10px}}
+@media(prefers-reduced-motion:reduce){.orbit,.preview-text{animation:none}}
+</style>
+</head>
+<body>
+<header><div class="brand">MOTION <b>STUDIO</b> <span style="font-size:12px;font-weight:500;color:#9ba7b7">2.0</span></div><span class="chip">Android + GitHub Actions</span></header>
+<main>
+<section>
+<h1>Tu idea, <span style="color:#ff7a00">en movimiento.</span></h1>
+<p class="intro">Crea videos de texto animado con tres estilos y sonido, sin PC ni API de pago. Al enviar la solicitud, GitHub hace el renderizado.</p>
+<form class="panel" id="form">
+<label for="title">Título principal</label><input id="title" maxlength="150" required value="Tu negocio merece una web" placeholder="¿Qué quieres anunciar?">
+<label for="subtitle">Texto de apoyo</label><input id="subtitle" maxlength="150" value="Diseño web, apps y sistemas" placeholder="Servicio o beneficio">
+<label for="cta">Llamada a la acción</label><input id="cta" maxlength="150" value="Cotiza por WhatsApp">
+<div class="fields">
+<div><label for="style">Estilo</label><select id="style"><option value="high-energy">⚡ High Energy</option><option value="engaging">◎ Engaging</option><option value="clean">◻ Clean</option></select></div>
+<div><label for="format">Formato</label><select id="format"><option value="vertical">9:16 · Vertical</option><option value="horizontal">16:9 · Horizontal</option><option value="square">1:1 · Cuadrado</option></select></div>
+<div><label for="duration">Duración</label><select id="duration"><option value="6">6 segundos</option><option value="9">9 segundos</option><option value="12" selected>12 segundos</option><option value="15">15 segundos</option><option value="20">20 segundos</option></select></div>
+<div><label for="accent">Color principal</label><input type="color" id="accent" value="#ff7a00" aria-label="Color de las animaciones"></div>
+</div>
+<label class="check"><input type="checkbox" id="sound" checked> Efectos de sonido originales</label>
+<button type="submit">Preparar video en GitHub ↗</button>
+<button type="button" id="copy" class="secondary">Copiar configuración</button>
+<p class="note">GitHub abrirá una solicitud prellenada. Toca <strong>Submit new issue</strong> para comenzar el renderizado. El contenido de la solicitud será público si el repositorio es público; no incluyas secretos. Solo las solicitudes de la cuenta propietaria activan el renderizado.</p>
+</form>
+</section>
+<aside class="preview-wrap">
+<div class="preview-card">
+<h2>Vista conceptual del estilo</h2>
+<div id="preview" class="preview high-energy" role="img" aria-label="Vista previa aproximada del video">
+<div class="orbit"></div><div class="orbit two"></div>
+<div class="preview-tag">MOTION STUDIO / 2.0</div>
+<div class="preview-text"><strong id="ptitle">Tu negocio merece una web</strong><small id="psub">Diseño web, apps y sistemas</small></div>
+<div class="preview-foot"></div>
+</div>
+<p class="note">La vista es ilustrativa; el MP4 final se renderiza en GitHub Actions a 24 fps, con cuatro escenas.</p>
+<details><summary>¿Dónde descargo el MP4?</summary><p class="note">Después de enviar el issue, abre su enlace a la ejecución de GitHub Actions y descarga el archivo <code>motion-studio-mp4</code> en <strong>Artifacts</strong>. También puedes ejecutar el workflow manualmente desde la pestaña Actions.</p></details>
+<a class="button secondary" href="https://github.com/aldo200908-lgtm/Motion-Studio/actions/workflows/render.yml">Ver GitHub Actions ↗</a>
+</div>
+</aside>
+</main>
+<footer>Motion Studio es un renderizador de animaciones, no un generador de imágenes ni videos con modelos de IA. Inspirado en estilos de Barty-Bart/motion-graphics (MIT).</footer>
+<script>
+(function(){
+"use strict";
+const repo="aldo200908-lgtm/Motion-Studio";
+const ids=["title","subtitle","cta","style","format","accent","duration","sound"];
+const $=id=>document.getElementById(id);
+const form=$("form"),preview=$("preview");
+function values(){return Object.fromEntries(ids.map(id=>[id, id==="duration"?Number($(id).value):id==="sound"?$(id).checked:$(id).value]));}
+function refresh(){
+  const c=values();
+  $("ptitle").textContent=c.title||"Tu título aquí";
+  $("psub").textContent=c.subtitle||"Describe tu servicio";
+  preview.className="preview "+c.style+" "+c.format;
+  preview.style.setProperty("--local-accent",c.accent);
+}
+ids.forEach(id=>$(id).addEventListener("input",refresh));refresh();
+form.addEventListener("submit",function(e){
+  e.preventDefault();const c=values();
+  if(!c.title.trim()){alert("Escribe un título.");return;}
+  const fence=String.fromCharCode(96).repeat(3);
+  const body="<!-- MOTION_STUDIO_REQUEST_V2 -->\n\nSolicitud creada desde Motion Studio 2.0.\n\n"+fence+"json\n"+JSON.stringify(c,null,2)+"\n"+fence+"\n\nNo incluyas información privada.";
+  const params=new URLSearchParams({title:"[Motion Studio] "+c.title.slice(0,70),body});
+  location.href="https://github.com/"+repo+"/issues/new?"+params.toString();
+});
+$("copy").addEventListener("click",async function(){
+ const content=JSON.stringify(values(),null,2);
+ try {await navigator.clipboard.writeText(content);this.textContent="✓ Copiado";setTimeout(()=>this.textContent="Copiar configuración",1800);}
+ catch(e){prompt("Copia la configuración:",content);}
+});
+})();
+</script>
+</body></html>
