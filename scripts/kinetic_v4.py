@@ -118,7 +118,7 @@ body{font-family:Arial,Helvetica,sans-serif;color:#f9fbff}
 .brand-top span{color:ACCENT}
 .progress{position:absolute;bottom:48px;left:35px;right:35px;height:5px;background:#ffffff22;z-index:60;border-radius:8px}
 .progress-fill{height:100%;width:100%;background:ACCENT;transform:scaleX(0);transform-origin:left;border-radius:8px}
-.scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:100px 34px 105px;overflow:hidden}
+.scene{opacity:0;visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:100px 34px 105px;overflow:hidden}
 .scene-inner{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;text-align:center}
 .scene-kicker{font-weight:900;color:ACCENT;font-size:16px;letter-spacing:3px}
 .kinetic{display:flex;flex-wrap:wrap;justify-content:center;gap:9px 12px;max-width:100%;font-size:56px;line-height:1.02;font-weight:900;letter-spacing:-2px;text-transform:uppercase}
