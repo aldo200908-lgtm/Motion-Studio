@@ -118,7 +118,7 @@ body{font-family:Arial,Helvetica,sans-serif;color:#f9fbff}
 .brand-top span{color:ACCENT}
 .progress{position:absolute;bottom:48px;left:35px;right:35px;height:5px;background:#ffffff22;z-index:60;border-radius:8px}
 .progress-fill{height:100%;width:100%;background:ACCENT;transform-origin:left;border-radius:8px}
-.scene{opacity:0;visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:100px 34px 105px;overflow:hidden}
+.scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:100px 34px 105px;overflow:hidden}
 .scene-inner{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;text-align:center}
 .scene-kicker{font-weight:900;color:ACCENT;font-size:16px;letter-spacing:3px}
 .kinetic{display:flex;flex-wrap:wrap;justify-content:center;gap:9px 12px;max-width:100%;font-size:56px;line-height:1.02;font-weight:900;letter-spacing:-2px;text-transform:uppercase}
@@ -160,7 +160,6 @@ body{font-family:Arial,Helvetica,sans-serif;color:#f9fbff}
         start=i*beat
         selector=f".scene-{i}"
         js += [
-            f'tl.set("{selector}",{{autoAlpha:1}}, {start:.3f});',
             f'tl.fromTo("{selector} .scene-inner",{{scale:1.16,y:35}},{{scale:1,y:0,duration:{beat:.3f},ease:"sine.out"}},{start:.3f});',
             f'tl.fromTo("{selector} .scene-kicker",{{autoAlpha:0,y:-30}},{{autoAlpha:1,y:0,duration:.55,ease:"expo.out"}},{start+.08:.3f});',
             f'tl.fromTo("{selector} .word>span",{{yPercent:130,rotation:9,scale:.7,autoAlpha:0}},{{yPercent:0,rotation:0,scale:1,autoAlpha:1,duration:.72,stagger:.11,ease:"back.out(1.8)"}},{start+.22:.3f});',
@@ -178,7 +177,6 @@ body{font-family:Arial,Helvetica,sans-serif;color:#f9fbff}
                 f'tl.fromTo(".wipe.alt",{{xPercent:-125,rotation:-5}},{{xPercent:125,rotation:-5,duration:.82,ease:"expo.inOut"}},{t-.31:.3f});',
                 f'tl.fromTo(".transition-circle",{{scale:0}},{{scale:1.5,duration:.52,ease:"expo.in"}},{t-.3:.3f});',
                 f'tl.to(".transition-circle",{{scale:0,duration:.5,ease:"expo.out"}},{t+.22:.3f});',
-                f'tl.set("{selector}",{{autoAlpha:0}},{t+.14:.3f});',
             ]
     js.append('window.__timelines["motion-studio"]=tl;')
     html_doc=('<!doctype html><html lang="es"><head><meta charset="utf-8"><style>'+css+
