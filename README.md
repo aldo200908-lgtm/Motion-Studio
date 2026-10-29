@@ -1,4 +1,13 @@
-# Motion Studio 3.1 — Android + HyperFrames 🎬
+# Motion Studio 4.0 — Kinetic Motion Graphics 🎬
+
+## Motion Studio 4.0 — iteración de motion graphics
+
+Motor principal actualizado con **tipografía cinética palabra por palabra**, énfasis en palabras clave, easing `back.out`, `expo.out` y `elastic.out`, entradas escalonadas, wipes de pantalla y círculo de transición, cámara con zoom, fondo con parallax y movimiento continuo. Los elementos semánticos conservan los logos de Claude, ChatGPT, Codex, GitHub y otras herramientas, junto con conectores dibujados, barras y contadores. La música y los golpes de transición se sintetizan por código propio y se mezclan mediante FFmpeg.
+
+**Formato del motor 4:** 540 × 960, 24 FPS, entre 15 y 20 segundos (18 s por defecto), MP4 y storyboard PNG. La web móvil usa los mismos parámetros. El motor clásico permanece disponible como respaldo.
+
+**Importante:** esto es motion graphics programado, no un generador de imágenes por IA. Los sonidos son originales y sintéticos, no música comercial. No incluye narración hablada ni alineación palabra por palabra con una voz externa. La animación de palabras sigue el orden del texto mediante tiempos programados.
+
 
 Crea videos animados con escenas relacionadas con tu guion desde un Android con GitHub Actions, **sin computadora, Codex ni claves de IA**.
 
