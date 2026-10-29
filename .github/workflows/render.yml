@@ -68,7 +68,7 @@ jobs:
       CI: "true"
       HYPERFRAMES_NO_UPDATE_CHECK: "1"
       ENGINE: ${{ github.event_name == 'push' && 'hyperframes' || inputs.engine }}
-      TITLE: ${{ github.event_name == 'push' && 'Claude vs ChatGPT: así se hacen motion graphics' || inputs.title }}
+      TITLE: "${{ github.event_name == 'push' && 'Claude vs ChatGPT: así se hacen motion graphics' || inputs.title }}"
       SUBTITLE: ${{ github.event_name == 'push' && 'Motion Studio 4.0' || inputs.subtitle }}
       SCRIPT: ${{ github.event_name == 'push' && 'Claude es similar a ChatGPT. Codex trabaja con GitHub Actions.' || inputs.script }}
       CTA: ${{ github.event_name == 'push' && 'Crea videos con Motion Studio' || inputs.cta }}
