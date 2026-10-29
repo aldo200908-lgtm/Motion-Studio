@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b1020">
-<title>Motion Studio 3.0 | HyperFrames</title>
+<title>Motion Studio 3.1 | Videos guiados por guion</title>
 <style>
 :root{color-scheme:dark;--orange:#ff7a00;--ink:#0d1221;--panel:#171d2e;--line:#2c3447;--muted:#a3adbf}
 *{box-sizing:border-box}body{margin:0;background:var(--ink);color:#fafafc;font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px}
@@ -14,7 +14,7 @@ h1{font-size:clamp(29px,4vw,44px);letter-spacing:-.04em;line-height:1.09;margin:
 .intro{color:var(--muted);line-height:1.55;max-width:520px;margin-bottom:24px}
 .panel{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:23px}
 label{display:block;font-size:13px;font-weight:700;margin:17px 0 8px}
-input,select{appearance:none;width:100%;padding:13px 14px;border:1px solid #3c475e;border-radius:12px;background:#101626;color:white;font:inherit;outline-offset:2px}
+input,select,textarea{appearance:none;width:100%;padding:13px 14px;border:1px solid #3c475e;border-radius:12px;background:#101626;color:white;font:inherit;outline-offset:2px}
 input:focus,select:focus{border-color:var(--orange)}
 .fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .fields>*{min-width:0}input[type=color]{padding:3px;height:47px;cursor:pointer}
@@ -35,7 +35,7 @@ h2{font-size:15px;text-align:left;font-weight:750;margin:0 0 15px}
 .preview-text small{display:block;font-size:clamp(10px,1.5vw,14px);opacity:.76;margin-top:14px}
 .preview-tag{position:absolute;left:18px;top:18px;font-size:9px;letter-spacing:.15em;z-index:1}
 .preview-foot{position:absolute;bottom:22px;left:22px;right:22px;height:5px;border-radius:20px;background:var(--local-accent);z-index:1}
-@keyframes spin{to{transform:rotate(360deg)}}@keyframes rise{0%{opacity:.2;transform:translateY(15px)}30%,80%{opacity:1;transform:translateY(0)}100%{opacity:.2;transform:translateY(-7px)}}
+textarea{resize:vertical;line-height:1.5;min-height:102px}.logo-preview{position:absolute;left:10px;right:10px;bottom:65px;display:flex;justify-content:center;gap:6px;z-index:2;flex-wrap:wrap}.brand-pill{border-radius:20px;background:#fff;color:#182133;border:1px solid #e5e5e5;padding:5px 9px;font-size:11px;font-weight:800}.brand-pill.similar{background:#ff7a00;color:#181818;border-color:#ff7a00}@keyframes spin{to{transform:rotate(360deg)}}@keyframes rise{0%{opacity:.2;transform:translateY(15px)}30%,80%{opacity:1;transform:translateY(0)}100%{opacity:.2;transform:translateY(-7px)}}
 details{margin-top:13px;text-align:left;border-top:1px solid var(--line);padding-top:12px}summary{cursor:pointer;font-weight:700}code{color:#ffbd80}
 footer{max-width:1100px;margin:auto;color:var(--muted);font-size:12px;padding:0 22px 24px}
 @media(max-width:760px){main{grid-template-columns:1fr;gap:20px}.preview-wrap{position:static;order:-1}.preview{width:min(100%,210px)}.preview.horizontal{width:100%}.panel{padding:20px}header{padding:17px 20px 10px}}
@@ -43,7 +43,7 @@ footer{max-width:1100px;margin:auto;color:var(--muted);font-size:12px;padding:0 
 </style>
 </head>
 <body>
-<header><div class="brand">MOTION <b>STUDIO</b> <span style="font-size:12px;font-weight:500;color:#9ba7b7">3.0</span></div><span class="chip">Android + GitHub Actions</span></header>
+<header><div class="brand">MOTION <b>STUDIO</b> <span style="font-size:12px;font-weight:500;color:#9ba7b7">3.1</span></div><span class="chip">Android + GitHub Actions</span></header>
 <main>
 <section>
 <h1>Tu idea, <span style="color:#ff7a00">en movimiento.</span></h1>
@@ -51,6 +51,8 @@ footer{max-width:1100px;margin:auto;color:var(--muted);font-size:12px;padding:0 
 <form class="panel" id="form">
 <label for="title">Título principal</label><input id="title" maxlength="150" required value="Tu negocio merece una web" placeholder="¿Qué quieres anunciar?">
 <label for="subtitle">Texto de apoyo</label><input id="subtitle" maxlength="150" value="Diseño web, apps y sistemas" placeholder="Servicio o beneficio">
+<label for="script">Guion o narración (frases separadas por puntos)</label><textarea id="script" maxlength="480" rows="4" placeholder="Claude me ayuda a investigar. Codex escribe el código. GitHub Actions genera el video.">Claude es similar a ChatGPT. Codex ayuda a programar. GitHub Actions renderiza el video.</textarea>
+<p class="note">Cada frase del guion se convierte en una escena. Si mencionas Claude, ChatGPT, Codex, GitHub u otras herramientas conocidas, verás sus logos; las comparaciones mostrarán ambos lados.</p>
 <label for="cta">Llamada a la acción</label><input id="cta" maxlength="150" value="Cotiza por WhatsApp">
 <label for="engine">Motor de animación</label><select id="engine"><option value="hyperframes" selected>🎬 HyperFrames · escenas profesionales</option><option value="classic">◌ Clásico · textos y formas</option></select>
 <div class="fields">
@@ -72,9 +74,9 @@ footer{max-width:1100px;margin:auto;color:var(--muted);font-size:12px;padding:0 
 <div class="orbit"></div><div class="orbit two"></div>
 <div class="preview-tag">MOTION STUDIO / 3.0</div>
 <div class="preview-text"><strong id="ptitle">Tu negocio merece una web</strong><small id="psub">Diseño web, apps y sistemas</small></div>
-<div class="preview-foot"></div>
+<div id="logoPreview" class="logo-preview"></div><div class="preview-foot"></div>
 </div>
-<p class="note">Vista de estilo aproximada. HyperFrames genera cuatro escenas con HTML y GSAP en GitHub Actions a 24 fps. Incluye cuatro capturas PNG del storyboard y un MP4.</p>
+<p class="note">Vista ilustrativa del estilo. El MP4 real mostrará una escena por frase del guion, con logos locales y comparaciones. No incluye voz narrada: solo animación y efectos de sonido.</p>
 <details><summary>¿Dónde descargo el MP4?</summary><p class="note">Después de enviar el issue, abre su enlace a la ejecución de GitHub Actions y descarga el archivo <code>motion-studio-mp4</code> en <strong>Artifacts</strong>. También puedes ejecutar el workflow manualmente desde la pestaña Actions.</p></details>
 <a class="button secondary" href="https://github.com/aldo200908-lgtm/Motion-Studio/actions/workflows/render.yml">Ver GitHub Actions ↗</a>
 </div>
@@ -85,7 +87,7 @@ footer{max-width:1100px;margin:auto;color:var(--muted);font-size:12px;padding:0 
 (function(){
 "use strict";
 const repo="aldo200908-lgtm/Motion-Studio";
-const ids=["engine","title","subtitle","cta","style","format","accent","duration","sound"];
+const ids=["engine","title","subtitle","script","cta","style","format","accent","duration","sound"];
 const $=id=>document.getElementById(id);
 const form=$("form"),preview=$("preview");
 function values(){return Object.fromEntries(ids.map(id=>[id, id==="duration"?Number($(id).value):id==="sound"?$(id).checked:$(id).value]));}
@@ -95,6 +97,11 @@ function refresh(){
   $("psub").textContent=c.subtitle||"Describe tu servicio";
   preview.className="preview "+c.style+" "+c.format;
   preview.style.setProperty("--local-accent",c.accent);
+  const brands=["Claude","ChatGPT","Codex","GitHub","ElevenLabs","DeepSeek","Gemini","HyperFrames","Remotion","FFmpeg","OpenCode"];
+  const found=brands.filter(name=>new RegExp("\\b"+name+"\\b","i").test(c.script+" "+c.title)).slice(0,3);
+  const relation=/\\b(vs|similar|parecido|contra|mejor que)\\b/i.test(c.script+" "+c.title);
+  const chips=relation&&found.length>1?[found[0],"VS",found[1]]:found;
+  $("logoPreview").replaceChildren(...chips.map(name=>{const x=document.createElement("span");x.className="brand-pill"+(name==="VS"?" similar":"");x.textContent=name;return x;}));
 }
 ids.forEach(id=>$(id).addEventListener("input",refresh));refresh();
 form.addEventListener("submit",function(e){
