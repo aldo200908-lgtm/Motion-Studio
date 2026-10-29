@@ -25,4 +25,12 @@ assert all(a["layout"]!=b["layout"] for a,b in zip(scenes,scenes[1:]))
 assert abs(sum(s["nominal_duration"] for s in scenes)-metadata["duration"])<.001
 assert all(abs(s["start"]*2-round(s["start"]*2))<.001 for s in scenes),"Cuts off 120 BPM beat grid"
 assert all((root/f"output/storyboard-{i+1:02d}.png").stat().st_size>1000 for i in range(len(scenes)))
+# Detect blank/occluded scenes (e.g. a fullscreen transition accidentally covering the film).
+for scene in scenes:
+    t=scene["start"]+scene["nominal_duration"]/2
+    frame=subprocess.check_output(["ffmpeg","-hide_banner","-loglevel","error","-ss",str(t),"-i",str(mp4),"-frames:v","1","-vf","scale=54:96","-pix_fmt","rgb24","-f","rawvideo","-"])
+    assert len(frame)==54*96*3
+    colors={frame[i:i+3] for i in range(0,len(frame),3)}
+    assert len(colors)>100,("scene visually occluded or blank",scene["scene"],len(colors))
+
 print(json.dumps({"verified":True,"duration":duration,"resolution":"540x960","fps":24,"audio":audio["codec_name"],"scenes":len(scenes),"layouts":[s["layout"] for s in scenes],"cuts":[s["start"] for s in scenes[1:]]},ensure_ascii=False))
