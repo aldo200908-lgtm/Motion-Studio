@@ -15,7 +15,7 @@ import struct
 import sys
 import wave
 from pathlib import Path
-from literal_scenes import make_scenes, split_script
+from literal_scenes import make_scenes, split_script, names_in, relation
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT / "hyperframes-project"
@@ -233,7 +233,7 @@ body{font-family:Arial,Helvetica,sans-serif}
 <style>''' + stylesheet + '''</style>
 </head><body><div id="root" class="''' + esc(style.replace("high-energy", "energy")) +
             '''" data-composition-id="motion-studio" data-start="0" data-duration="''' + str(duration) +
-            '''" data-width="''' + str(w) + '''" data-height="''' + str(h) + '''">
+            '''" data-format="''' + cfg["format"] + '''" data-width="''' + str(w) + '''" data-height="''' + str(h) + '''">
 <div class="shape a"></div><div class="shape b"></div>
 <div class="topline"><span>MOTION STUDIO</span><span>HYPERFRAMES / 03</span></div>
 ''' + "\n".join(scenes) + '''
@@ -261,7 +261,12 @@ def build():
         raise FileNotFoundError("GSAP is not installed: run npm install first")
     shutil.copyfile(gsap, PROJECT / "assets" / "gsap.min.js")
     (PROJECT / "index.html").write_text(composition(cfg), "utf-8")
-    (OUTPUT / "metadata.json").write_text(json.dumps(cfg, indent=2, ensure_ascii=False), "utf-8")
+    metadata = dict(cfg)
+    metadata["scene_plan"] = [{"text": phrase,
+                               "brands": [name for name, _ in names_in(phrase)],
+                               "relation": relation(phrase, names_in(phrase))}
+                              for phrase in split_script(cfg)]
+    (OUTPUT / "metadata.json").write_text(json.dumps(metadata, indent=2, ensure_ascii=False), "utf-8")
     (OUTPUT / "CREDITS.txt").write_text(
         "Motor de video: HyperFrames (Apache-2.0, heygen-com/hyperframes)\n"
         "Animaciones: GSAP (licencia estándar GSAP), escenas originales Motion Studio.\n"
