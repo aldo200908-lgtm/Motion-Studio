@@ -62,9 +62,9 @@ def read_config():
         if "engine" not in data:
             cfg["engine"] = "classic"
     if event_name == "push":
-        cfg.update(engine="hyperframes", title="Claude vs ChatGPT",
-                   subtitle="Comparación de herramientas de IA",
-                   script="Claude es similar a ChatGPT. Codex ayuda a programar. GitHub Actions renderiza el video.",
+        cfg.update(engine="hyperframes", title="De una idea a un video con movimiento",
+                   subtitle="Del guion al render con Motion Studio",
+                   script="Claude organiza el guion. Codex anima con GSAP. Motion Studio publica el resultado.",
                    cta="Crea videos con Motion Studio", style="high-energy", format="vertical",
                    accent="#FF7A00", duration=15, sound=True)
     for key in ("engine", "style", "format"):
