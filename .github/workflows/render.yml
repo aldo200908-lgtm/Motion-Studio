@@ -65,12 +65,12 @@ jobs:
           python -m pip install --disable-pip-version-check "Pillow>=10,<13"
       - name: Render MP4
         env:
-          TITLE: ${{ inputs.title }}
-          SUBTITLE: ${{ inputs.subtitle }}
-          CTA: ${{ inputs.cta }}
+          TITLE: ${{ github.event_name == 'push' && 'Prueba automatica Motion Studio' || inputs.title }}
+          SUBTITLE: ${{ github.event_name == 'push' && 'Render desde GitHub Actions' || inputs.subtitle }}
+          CTA: ${{ github.event_name == 'push' && 'Prueba finalizada' || inputs.cta }}
           STYLE: ${{ github.event_name == 'push' && 'high-energy' || inputs.style }}
           FORMAT: ${{ github.event_name == 'push' && 'horizontal' || inputs.format }}
-          ACCENT: ${{ inputs.accent }}
+          ACCENT: ${{ github.event_name == 'push' && '#FF7A00' || inputs.accent }}
           DURATION: ${{ github.event_name == 'push' && '6' || inputs.duration }}
           SOUND: ${{ github.event_name == 'push' && 'false' || inputs.sound }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
