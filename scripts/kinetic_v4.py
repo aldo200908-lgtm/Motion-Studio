@@ -142,7 +142,7 @@ body{font-family:Arial,Helvetica,sans-serif;color:#f9fbff}
 .bar-fill{height:100%;width:100%;background:ACCENT;transform:scaleX(0);transform-origin:left}
 .counter{font-size:65px;color:ACCENT;font-weight:900;margin-top:16px}
 .scene-bottom{font-size:14px;letter-spacing:3px;color:#c5cee0;font-weight:800}
-.wipe{position:absolute;z-index:45;inset:-10%;background:ACCENT;transform:translateX(-115%) rotate(-5deg);pointer-events:none}
+.wipe{position:absolute;z-index:45;inset:-10%;background:ACCENT;pointer-events:none}
 .wipe.alt{background:#fff;z-index:44}
 .transition-circle{position:absolute;z-index:46;left:50%;top:50%;width:1200px;height:1200px;margin-left:-600px;margin-top:-600px;background:#0d1526;border-radius:50%;pointer-events:none}
 """
