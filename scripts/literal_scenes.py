@@ -11,7 +11,7 @@ from pathlib import Path
 BRANDS = [
  ("Claude", "claude", ("claude", "anthropic")),
  ("ChatGPT", "openai", ("chatgpt", "chat gpt")),
- ("Codex", "openai", ("codex",)),
+ ("Codex", "codex", ("codex",)),
  ("ElevenLabs", "elevenlabs", ("elevenlabs", "eleven labs")),
  ("GitHub", "github", ("github", "git hub")),
  ("DeepSeek", "deepseek", ("deepseek", "deep seek")),
@@ -77,11 +77,16 @@ def relation(clause, entities):
 
 def bundle_icons(root, project):
     src = root/"node_modules"/"simple-icons"/"icons"
+    lobe = root/"node_modules"/"@lobehub"/"icons-static-svg"/"icons"
     dst = project/"assets"/"icons"
     dst.mkdir(parents=True, exist_ok=True)
     copied = []
     for _, slug, _ in BRANDS:
-        file = src/(slug+".svg")
+        # Prefer the dedicated Codex mark, and use the OpenAI blossom for ChatGPT.
+        # Lobe Icons covers AI brands removed from other icon collections.
+        file = (lobe if slug in {"openai", "codex"} else src)/(slug+".svg")
+        if not file.is_file():
+            file = lobe/(slug+".svg")
         if file.is_file():
             shutil.copyfile(file, dst/(slug+".svg"))
             copied.append(slug)
