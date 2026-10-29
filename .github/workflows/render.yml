@@ -39,7 +39,7 @@ on:
       duration:
         description: "Duración en segundos (15-20 en Motion Studio 4)"
         type: number
-        default: 18
+        default: 15
       sound:
         description: "Efectos de sonido"
         type: boolean
@@ -75,8 +75,8 @@ jobs:
       STYLE: ${{ github.event_name == 'push' && 'high-energy' || inputs.style }}
       FORMAT: vertical
       ACCENT: ${{ github.event_name == 'push' && '#FF7A00' || inputs.accent }}
-      DURATION: ${{ github.event_name == 'push' && '18' || inputs.duration }}
-      SOUND: ${{ github.event_name == 'push' && 'false' || toJSON(inputs.sound) }}
+      DURATION: ${{ github.event_name == 'push' && '15' || inputs.duration }}
+      SOUND: ${{ github.event_name == 'push' && 'true' || toJSON(inputs.sound) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
