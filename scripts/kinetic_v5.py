@@ -185,9 +185,9 @@ body{font-family:Arial,Helvetica,sans-serif;color:#fff}
 .cta-play{width:148px;height:148px;border-radius:50%;background:ACCENT;color:#0a0e17;display:grid;place-items:center;font-size:68px;box-shadow:0 0 65px #ff7a0055}
 .cta-label{font-size:36px;letter-spacing:-1px;font-weight:900}
 .cta-under{font-size:17px;letter-spacing:3px;font-weight:900;color:ACCENT}
-.trans-wipe{position:absolute;inset:-10%;z-index:42;background:ACCENT;pointer-events:none}
-.trans-zoom{position:absolute;left:50%;top:50%;margin-left:-700px;margin-top:-700px;width:1400px;height:1400px;border-radius:50%;background:#f3f5fa;z-index:43;pointer-events:none}
-.trans-shape{position:absolute;left:50%;top:50%;margin-left:-800px;margin-top:-800px;width:1600px;height:1600px;background:ACCENT;border-radius:23%;z-index:44;pointer-events:none}
+.trans-wipe{position:absolute;inset:-10%;z-index:42;background:ACCENT;opacity:0;pointer-events:none}
+.trans-zoom{position:absolute;left:50%;top:50%;margin-left:-700px;margin-top:-700px;width:1400px;height:1400px;border-radius:50%;background:#f3f5fa;z-index:43;opacity:0;pointer-events:none}
+.trans-shape{position:absolute;left:50%;top:50%;margin-left:-800px;margin-top:-800px;width:1600px;height:1600px;background:ACCENT;border-radius:23%;z-index:44;opacity:0;pointer-events:none}
 """
     css=css.replace("ACCENT",cfg["accent"])
     js=[
@@ -223,12 +223,12 @@ body{font-family:Arial,Helvetica,sans-serif;color:#fff}
             js.append(f'tl.to("{sel} .scene-inner",{{opacity:0,duration:.32,ease:"sine.in"}},{cut-.12:.3f});')
             kind=("wipe","zoom","shape")[i%3]
             if kind=="wipe":
-                js.append(f'tl.fromTo(".trans-wipe-{i}",{{xPercent:-115}},{{xPercent:115,duration:.7,ease:"expo.inOut",immediateRender:false}},{cut-.35:.3f});')
+                js.append(f'tl.fromTo(".trans-wipe-{i}",{{xPercent:-115,opacity:0}},{{xPercent:115,opacity:1,duration:.7,ease:"expo.inOut",immediateRender:false}},{cut-.35:.3f});')
             elif kind=="zoom":
-                js.append(f'tl.fromTo(".trans-zoom-{i}",{{scale:0}},{{scale:1.6,duration:.38,ease:"expo.in",immediateRender:false}},{cut-.32:.3f});')
+                js.append(f'tl.fromTo(".trans-zoom-{i}",{{scale:0,opacity:0}},{{scale:1.6,opacity:1,duration:.38,ease:"expo.in",immediateRender:false}},{cut-.32:.3f});')
                 js.append(f'tl.to(".trans-zoom-{i}",{{scale:0,duration:.4,ease:"expo.out"}},{cut+.06:.3f});')
             else:
-                js.append(f'tl.fromTo(".trans-shape-{i}",{{scale:0,rotation:-35}},{{scale:1.6,rotation:25,duration:.42,ease:"expo.in",immediateRender:false}},{cut-.34:.3f});')
+                js.append(f'tl.fromTo(".trans-shape-{i}",{{scale:0,rotation:-35,opacity:0}},{{scale:1.6,rotation:25,opacity:1,duration:.42,ease:"expo.in",immediateRender:false}},{cut-.34:.3f});')
                 js.append(f'tl.to(".trans-shape-{i}",{{scale:0,duration:.4,ease:"expo.out"}},{cut+.08:.3f});')
     js.append('window.__timelines["motion-studio"]=tl;')
     overlays=''.join(
