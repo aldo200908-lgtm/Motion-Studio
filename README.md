@@ -1,4 +1,11 @@
-# Motion Studio 4.0 — Kinetic Motion Graphics 🎬
+# Motion Studio 5.0 — Kinetic Films
+
+## Motion Studio 5.0 — entrega integral
+
+El motor activo es `scripts/kinetic_v5.py`, con una película editorial coherente de cuatro actos (idea → guion → animación → CTA). Las plantillas hero, logos, flujo y CTA no se repiten consecutivamente. Hay movimiento de cámara y fondo durante toda la película, movimiento secundario en logos y elementos, tres transiciones diferentes (wipe, zoom-through y forma expansiva), escenas solapadas para evitar fotogramas vacíos, y cortes en una cuadrícula musical de 120 BPM.
+
+La pista musical y los golpes de entrada son sintetizados y originales. Los logos se cargan desde SVG locales cuando están disponibles; si no, se indica «LOGO NO DISPONIBLE». La marca MOTION STUDIO permanece fija arriba y la escena final incluye llamada a la acción. El render es 9:16, 540×960, 24 FPS, 15–20 s. La prueba automática `scripts/verify_v5.py` usa ffprobe para comprobar duración, resolución, fotogramas por segundo, pista de audio y storyboard, además de reglas de escenas y cortes.
+
 
 ## Motion Studio 4.0 — iteración de motion graphics
 
