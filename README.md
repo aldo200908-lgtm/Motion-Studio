@@ -23,7 +23,7 @@ En el formulario web hay un campo **Guion / narración** (máximo 480 caracteres
 - Segunda escena: logo y tarjeta de Codex.
 - Tercera escena: logo y tarjeta de GitHub.
 - Para temas conocidos sin marcas (web, voz, programación, video, ventas, investigación), se representa un concepto visual concreto y no solamente un fondo abstracto.
-- Los logos SVG provienen del paquete **simple-icons@16.36.0**, copiados localmente para renderizar sin depender de un CDN. Si falta uno, se usa una tarjeta con siglas.
+- Los logos SVG provienen de **simple-icons@16.36.0** y **@lobehub/icons-static-svg@1.101.0**, copiados localmente antes de renderizar para evitar dependencias de CDN. Para ChatGPT se usa el símbolo de OpenAI; para Codex se usa el icono específico de Codex. Si falta un logo, se muestra una tarjeta con siglas. Las marcas pertenecen a sus titulares.
 - El motor produce también una entrada `scene_plan` en `metadata.json` y una captura PNG por escena.
 
 **Limitación:** el campo «Guion» todavía **no genera una voz narrada ni sincroniza audio de voz palabra por palabra**. Es sincronización *aproximada por frase* con tiempos repartidos. Para una sincronización real se necesitarán grabación o TTS, marcas temporales y alineación con el audio.
