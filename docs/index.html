@@ -99,7 +99,7 @@ function refresh(){
   preview.style.setProperty("--local-accent",c.accent);
   const brands=["Claude","ChatGPT","Codex","GitHub","ElevenLabs","DeepSeek","Gemini","HyperFrames","Remotion","FFmpeg","OpenCode"];
   const found=brands.filter(name=>new RegExp("\\b"+name+"\\b","i").test(c.script+" "+c.title)).slice(0,3);
-  const relation=/\\b(vs|similar|parecido|contra|mejor que)\\b/i.test(c.script+" "+c.title);
+  const relation=/\b(vs|similar|parecido|contra|mejor que)\b/i.test(c.script+" "+c.title);
   const chips=relation&&found.length>1?[found[0],"VS",found[1]]:found;
   $("logoPreview").replaceChildren(...chips.map(name=>{const x=document.createElement("span");x.className="brand-pill"+(name==="VS"?" similar":"");x.textContent=name;return x;}));
 }
