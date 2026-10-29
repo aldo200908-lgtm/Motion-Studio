@@ -1,4 +1,4 @@
-# Motion Studio 3.0 — Android + HyperFrames 🎬
+# Motion Studio 3.1 — Android + HyperFrames 🎬
 
 Crea videos animados con escenas relacionadas con tu guion desde un Android con GitHub Actions, **sin computadora, Codex ni claves de IA**.
 
@@ -14,6 +14,8 @@ HyperFrames se usa **de verdad**: ejecutamos el binario oficial de npm para inte
 El trabajo usa el CLI HyperFrames v0.8.216 y GSAP 3.14.2 (versiones fijadas en el workflow para evitar cambios inesperados).
 
 ### Guion con visuales literales (3.1)
+
+**Prueba de render comprobada:** [Ver ejecución con los logos de Claude, ChatGPT, Codex y GitHub](https://github.com/aldo200908-lgtm/Motion-Studio/actions/runs/40941251476).
 
 En el formulario web hay un campo **Guion / narración** (máximo 480 caracteres). Se divide por frases y crea una escena por cada segmento, con duración aproximada repartida automáticamente; las imágenes corresponden a las palabras de cada frase.
 
