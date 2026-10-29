@@ -65,8 +65,8 @@ def read_config():
         cfg.update(engine="hyperframes", title="Claude vs ChatGPT",
                    subtitle="Comparación de herramientas de IA",
                    script="Claude es similar a ChatGPT. Codex ayuda a programar. GitHub Actions renderiza el video.",
-                   cta="Hecho desde Android", style="high-energy", format="horizontal",
-                   accent="#FF7A00", duration=6, sound=False)
+                   cta="Crea videos con Motion Studio", style="high-energy", format="vertical",
+                   accent="#FF7A00", duration=15, sound=True)
     for key in ("engine", "style", "format"):
         cfg[key] = str(cfg[key]).strip()
     if cfg["engine"] not in {"classic", "hyperframes"}:
