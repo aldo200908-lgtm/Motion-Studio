@@ -1,4 +1,4 @@
-name: Render Motion Studio 3.0
+name: Render Motion Studio 4.0
 on:
   workflow_dispatch:
     inputs:
@@ -37,9 +37,9 @@ on:
         description: "Color hexadecimal"
         default: "#FF7A00"
       duration:
-        description: "Duración en segundos (6-20)"
+        description: "Duración en segundos (15-20 en Motion Studio 4)"
         type: number
-        default: 12
+        default: 18
       sound:
         description: "Efectos de sonido"
         type: boolean
@@ -52,6 +52,7 @@ on:
       - ".github/workflows/render.yml"
       - "scripts/hyperframes_build.py"
       - "scripts/literal_scenes.py"
+      - "scripts/kinetic_v4.py"
 permissions:
   contents: read
   issues: write
@@ -67,14 +68,14 @@ jobs:
       CI: "true"
       HYPERFRAMES_NO_UPDATE_CHECK: "1"
       ENGINE: ${{ github.event_name == 'push' && 'hyperframes' || inputs.engine }}
-      TITLE: ${{ github.event_name == 'push' && 'Motion Studio con HyperFrames' || inputs.title }}
-      SUBTITLE: ${{ github.event_name == 'push' && 'Animaciones HTML GSAP FFmpeg' || inputs.subtitle }}
-      SCRIPT: ${{ inputs.script }}
-      CTA: ${{ github.event_name == 'push' && 'Hecho desde Android' || inputs.cta }}
+      TITLE: ${{ github.event_name == 'push' && 'Claude vs ChatGPT: así se hacen motion graphics' || inputs.title }}
+      SUBTITLE: ${{ github.event_name == 'push' && 'Motion Studio 4.0' || inputs.subtitle }}
+      SCRIPT: ${{ github.event_name == 'push' && 'Claude es similar a ChatGPT. Codex trabaja con GitHub Actions.' || inputs.script }}
+      CTA: ${{ github.event_name == 'push' && 'Crea videos con Motion Studio' || inputs.cta }}
       STYLE: ${{ github.event_name == 'push' && 'high-energy' || inputs.style }}
-      FORMAT: ${{ github.event_name == 'push' && 'horizontal' || inputs.format }}
+      FORMAT: vertical
       ACCENT: ${{ github.event_name == 'push' && '#FF7A00' || inputs.accent }}
-      DURATION: ${{ github.event_name == 'push' && '6' || inputs.duration }}
+      DURATION: ${{ github.event_name == 'push' && '18' || inputs.duration }}
       SOUND: ${{ github.event_name == 'push' && 'false' || toJSON(inputs.sound) }}
     steps:
       - uses: actions/checkout@v4
@@ -107,7 +108,7 @@ jobs:
           ./node_modules/.bin/hyperframes --version
       - name: Build HyperFrames HTML composition
         if: steps.request.outputs.engine == 'hyperframes'
-        run: python scripts/hyperframes_build.py --mode compose
+        run: python scripts/kinetic_v4.py
       - name: Validate and render via real HyperFrames CLI
         if: steps.request.outputs.engine == 'hyperframes'
         working-directory: hyperframes-project
@@ -120,7 +121,7 @@ jobs:
           INCLUDE_SOUND: ${{ steps.request.outputs.sound }}
         run: |
           if [ "$INCLUDE_SOUND" = "true" ]; then
-            ffmpeg -hide_banner -loglevel error -y -i output/hyperframes_raw.mp4 -i output/sfx.wav \
+            ffmpeg -hide_banner -loglevel error -y -i output/hyperframes_raw.mp4 -i output/music.wav \
               -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 128k \
               -af "loudnorm=I=-16:TP=-3:LRA=11" -shortest output/video.mp4
           else
