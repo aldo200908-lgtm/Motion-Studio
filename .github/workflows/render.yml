@@ -1,47 +1,99 @@
-name: Render Motion Studio
+name: Render Motion Studio 2.0
 on:
   workflow_dispatch:
     inputs:
       title:
-        description: Texto principal
+        description: "Título principal"
         required: true
-        default: Tu negocio merece una web
+        default: "Tu negocio merece una web"
       subtitle:
-        description: Texto secundario
+        description: "Texto secundario"
         required: true
-        default: Diseño web profesional
-      format:
-        description: Formato
+        default: "Diseño web, apps y sistemas"
+      cta:
+        description: "Llamada a la acción"
+        required: true
+        default: "Cotiza por WhatsApp"
+      style:
+        description: "Estilo visual"
         type: choice
-        options: [vertical, horizontal]
+        options: [high-energy, engaging, clean]
+        default: high-energy
+      format:
+        description: "Formato"
+        type: choice
+        options: [vertical, horizontal, square]
         default: vertical
+      accent:
+        description: "Color hexadecimal"
+        default: "#FF7A00"
       duration:
-        description: Duracion en segundos (5-20)
+        description: "Duración en segundos (6-20)"
         type: number
         default: 12
+      sound:
+        description: "Incluir sonido"
+        type: boolean
+        default: true
+  issues:
+    types: [opened]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/render.yml"
+      - "scripts/motion_v2.py"
 permissions:
   contents: read
+  issues: write
 jobs:
   render:
+    if: >-
+      github.event_name != 'issues' ||
+      (github.event.issue.user.login == 'aldo200908-lgtm' &&
+       startsWith(github.event.issue.title, '[Motion Studio]'))
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install requirements
         run: |
-          sudo apt-get update
+          sudo apt-get update -qq
           sudo apt-get install -y ffmpeg fonts-dejavu-core
-          python3 -m pip install Pillow
+          python -m pip install --disable-pip-version-check "Pillow>=10,<13"
       - name: Render MP4
         env:
           TITLE: ${{ inputs.title }}
           SUBTITLE: ${{ inputs.subtitle }}
-          FORMAT: ${{ inputs.format }}
-          DURATION: ${{ inputs.duration }}
-        run: python3 scripts/render.py
-      - uses: actions/upload-artifact@v4
+          CTA: ${{ inputs.cta }}
+          STYLE: ${{ github.event_name == 'push' && 'high-energy' || inputs.style }}
+          FORMAT: ${{ github.event_name == 'push' && 'horizontal' || inputs.format }}
+          ACCENT: ${{ inputs.accent }}
+          DURATION: ${{ github.event_name == 'push' && '6' || inputs.duration }}
+          SOUND: ${{ github.event_name == 'push' && 'false' || inputs.sound }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: python scripts/motion_v2.py
+      - name: Upload MP4
+        uses: actions/upload-artifact@v4
         with:
-          name: motion-studio-video
-          path: output/video.mp4
+          name: motion-studio-mp4
+          path: |
+            output/video.mp4
+            output/metadata.json
+            output/CREDITS.txt
           if-no-files-found: error
           retention-days: 7
+      - name: Reply to request
+        if: success() && github.event_name == 'issues'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = context.serverUrl + '/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '✅ Video generado. Abre esta ejecución y descarga **motion-studio-mp4** en Artifacts: ' + url
+            });
