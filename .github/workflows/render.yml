@@ -1,4 +1,4 @@
-name: Render Motion Studio 4.0
+name: Render Motion Studio 5.0
 on:
   workflow_dispatch:
     inputs:
@@ -53,6 +53,8 @@ on:
       - "scripts/hyperframes_build.py"
       - "scripts/literal_scenes.py"
       - "scripts/kinetic_v4.py"
+      - "scripts/kinetic_v5.py"
+      - "scripts/verify_v5.py"
 permissions:
   contents: read
   issues: write
@@ -68,9 +70,9 @@ jobs:
       CI: "true"
       HYPERFRAMES_NO_UPDATE_CHECK: "1"
       ENGINE: ${{ github.event_name == 'push' && 'hyperframes' || inputs.engine }}
-      TITLE: "${{ github.event_name == 'push' && 'Claude vs ChatGPT: así se hacen motion graphics' || inputs.title }}"
+      TITLE: "${{ github.event_name == 'push' && 'De una idea a un video con movimiento' || inputs.title }}"
       SUBTITLE: ${{ github.event_name == 'push' && 'Motion Studio 4.0' || inputs.subtitle }}
-      SCRIPT: ${{ github.event_name == 'push' && 'Claude es similar a ChatGPT. Codex trabaja con GitHub Actions.' || inputs.script }}
+      SCRIPT: ${{ github.event_name == 'push' && 'Claude organiza el guion. Codex anima con GSAP. Motion Studio publica el resultado.' || inputs.script }}
       CTA: ${{ github.event_name == 'push' && 'Crea videos con Motion Studio' || inputs.cta }}
       STYLE: ${{ github.event_name == 'push' && 'high-energy' || inputs.style }}
       FORMAT: vertical
@@ -108,7 +110,7 @@ jobs:
           ./node_modules/.bin/hyperframes --version
       - name: Build HyperFrames HTML composition
         if: steps.request.outputs.engine == 'hyperframes'
-        run: python scripts/kinetic_v4.py
+        run: python scripts/kinetic_v5.py
       - name: Validate and render via real HyperFrames CLI
         if: steps.request.outputs.engine == 'hyperframes'
         working-directory: hyperframes-project
@@ -134,12 +136,13 @@ jobs:
           scenes = json.loads(Path("output/metadata.json").read_text()).get("scene_plan", [])
           count = len(scenes) or 4
           for n in range(count):
-              t = round(duration * (n+.5) / count, 3)
+              t = round((scenes[n]["start"]+scenes[n]["nominal_duration"]/2) if scenes else duration*(n+.5)/count, 3)
               subprocess.run(["ffmpeg","-hide_banner","-loglevel","error","-y",
                               "-ss",str(t),"-i","output/video.mp4",
                               "-frames:v","1",f"output/storyboard-{n+1:02d}.png"],check=True)
           PY
           ffprobe -v error -show_entries format=duration,size -of default=noprint_wrappers=1 output/video.mp4
+          python scripts/verify_v5.py
       - name: Upload MP4 and storyboard
         uses: actions/upload-artifact@v4
         with:
