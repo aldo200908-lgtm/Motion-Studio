@@ -103,7 +103,7 @@ jobs:
       - name: Install HyperFrames and GSAP
         if: steps.request.outputs.engine == 'hyperframes'
         run: |
-          npm install --no-save --no-audit --no-fund hyperframes@0.8.216 gsap@3.14.2 simple-icons@16.36.0
+          npm install --no-save --no-audit --no-fund hyperframes@0.8.216 gsap@3.14.2 simple-icons@16.36.0 @lobehub/icons-static-svg@1.101.0
           ./node_modules/.bin/hyperframes --version
       - name: Build HyperFrames HTML composition
         if: steps.request.outputs.engine == 'hyperframes'
