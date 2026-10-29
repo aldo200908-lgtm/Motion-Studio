@@ -78,7 +78,7 @@ def scene_visual(text, icons):
 
 def build():
     cfg=read_config()
-    duration=max(15,min(20,int(cfg["duration"])))
+    duration=15  # reliable HyperFrames render window; 15 seconds meets requested 15–20s
     cfg.update(engine="hyperframes",format="vertical",duration=duration)
     PROJECT.mkdir(parents=True,exist_ok=True)
     (PROJECT/"assets").mkdir(exist_ok=True)
@@ -173,17 +173,17 @@ body{font-family:Arial,Helvetica,sans-serif;color:#f9fbff}
         if i<len(phrases)-1:
             t=(i+1)*beat
             js += [
-                f'tl.fromTo(".wipe",{{xPercent:-110,rotation:-5}},{{xPercent:110,rotation:-5,duration:.86,ease:"expo.inOut"}},{t-.43:.3f});',
-                f'tl.fromTo(".wipe.alt",{{xPercent:-125,rotation:-5}},{{xPercent:125,rotation:-5,duration:.82,ease:"expo.inOut"}},{t-.31:.3f});',
-                f'tl.fromTo(".transition-circle",{{scale:0}},{{scale:1.5,duration:.52,ease:"expo.in"}},{t-.3:.3f});',
-                f'tl.to(".transition-circle",{{scale:0,duration:.5,ease:"expo.out"}},{t+.22:.3f});',
+                f'tl.fromTo(".wipe-{i}",{{xPercent:-110,rotation:-5}},{{xPercent:110,rotation:-5,duration:.86,ease:"expo.inOut"}},{t-.43:.3f});',
+                f'tl.fromTo(".wipe-alt-{i}",{{xPercent:-125,rotation:-5}},{{xPercent:125,rotation:-5,duration:.82,ease:"expo.inOut"}},{t-.31:.3f});',
+                f'tl.fromTo(".circle-{i}",{{scale:0}},{{scale:1.5,duration:.52,ease:"expo.in"}},{t-.3:.3f});',
+                f'tl.to(".circle-{i}",{{scale:0,duration:.5,ease:"expo.out"}},{t+.22:.3f});',
             ]
     js.append('window.__timelines["motion-studio"]=tl;')
     html_doc=('<!doctype html><html lang="es"><head><meta charset="utf-8"><style>'+css+
        '</style></head><body><div id="root" data-composition-id="motion-studio" data-start="0" data-duration="'+str(duration)+
        '" data-width="540" data-height="960"><div class="ambient"></div><div class="grid-bg"></div>'+
        '<div class="orb"></div><div class="orb two"></div><div class="brand-top">MOTION <span>STUDIO</span></div>'+
-       ''.join(scenes)+'<div class="wipe"></div><div class="wipe alt"></div><div class="transition-circle"></div>'+
+       ''.join(scenes)+''.join(f'<div class="wipe wipe-{i}"></div><div class="wipe alt wipe-alt-{i}"></div><div class="transition-circle circle-{i}"></div>' for i in range(len(phrases)-1))+
        '<div class="progress"><div class="progress-fill"></div></div></div>'+
        '<script src="./assets/gsap.min.js"></script><script>'+'\n'.join(js)+'</script></body></html>')
     (PROJECT/"index.html").write_text(html_doc,encoding="utf-8")
