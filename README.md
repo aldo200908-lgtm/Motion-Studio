@@ -1,58 +1,59 @@
-# Motion Studio 2.0 🎬
+# Motion Studio 3.0 — Android + HyperFrames 🎬
 
-Generador **offline y determinista** de motion graphics (MP4) que se ejecuta en **GitHub Actions**. Puedes controlarlo desde Android: no requiere computadora, Codex ni API de pago.
+Crea videos animados desde un Android con GitHub Actions, **sin computadora, Codex ni claves de IA**.
 
-## Qué incluye esta versión
+## Motores disponibles
 
-- 3 estilos: **High Energy** (títulos cinéticos + geometría), **Engaging** (nodos y recorrido visual), **Clean** (tarjetas editoriales).
-- 3 formatos: **vertical 9:16**, **horizontal 16:9** y **cuadrado 1:1**.
-- Duración de 6 a 20 segundos, 24 FPS; títulos, texto de apoyo, CTA y color personalizables.
-- Efectos de sonido sintetizados originales, opción de video silencioso.
-- MP4 H.264 + AAC, metadatos y créditos en los artefactos de GitHub Actions.
-- Editor estático móvil en [docs/index.html](docs/index.html). Crea solicitudes mediante GitHub Issues **sin exponer tokens**.
+| Motor | Tecnología | Funciones |
+|---|---|---|
+| **HyperFrames** (nuevo) | [HyperFrames CLI](https://github.com/heygen-com/hyperframes), GSAP, Chromium y FFmpeg | Cuatro escenas (hook, solución, resultados, CTA), transiciones, entrada/salida de texto, formas y maquetas web, storyboard PNG |
+| **Clásico** (conservado) | Python, Pillow y FFmpeg | Textos animados y formas geométricas |
 
-## Opción 1 — GitHub Actions, sin configurar Pages
+HyperFrames se usa **de verdad**: ejecutamos el binario oficial de npm para interpretar una composición HTML creada por Motion Studio y renderizarla a MP4. **No** significa que los presets oficiales o todas las skills del repositorio original ya estén instaladas. Tampoco genera automáticamente escenas a partir de un prompt libre de IA.
 
-1. Ve a **Actions → Render Motion Studio 2.0 → Run workflow**.
-2. Escribe título, subtítulo y CTA. Selecciona estilo, formato, color, duración y sonido.
-3. Ejecuta el workflow. Cuando termine, abre su ejecución.
-4. Descarga **motion-studio-mp4** en la sección **Artifacts**; contiene video.mp4 y metadatos.
+El trabajo usa el CLI HyperFrames v0.8.216 y GSAP 3.14.2 (versiones fijadas en el workflow para evitar cambios inesperados).
 
-Enlace directo: https://github.com/aldo200908-lgtm/Motion-Studio/actions/workflows/render.yml
+### Características
 
-## Opción 2 — Interfaz web desde tu celular
+- Formatos vertical 9:16 (540×960), horizontal 16:9 (960×540) y cuadrado 1:1 (720×720).
+- Duraciones configurables entre 6 y 20 segundos; 24 fps.
+- Textos, color de marca, estilo y CTA editables.
+- Cuatro escenas, cuatro imágenes de storyboard PNG y MP4.
+- Efectos de sonido originales sintetizados localmente (desactivables).
+- Renderizado en GitHub Actions y descarga vía Artifacts. No se usan servidores de pago por separado, pero GitHub Actions tiene cuotas y límites de ejecución.
 
-1. En GitHub abre **Settings → Pages**.
-2. En **Build and deployment** selecciona **Deploy from a branch**, elige **main** y la carpeta **/docs**, luego guarda.
-3. Después de que Pages esté activo, abre **https://aldo200908-lgtm.github.io/Motion-Studio/**.
-4. Completa el formulario y toca **Preparar video en GitHub**.
-5. GitHub abrirá un formulario de issue prellenado. **Debes tocar Submit new issue**.
-6. La solicitud del propietario activa GitHub Actions; cuando termine, se publica un comentario en el issue con enlace a la ejecución.
-7. Abre la ejecución y descarga el archivo **motion-studio-mp4**.
+## Método 1: GitHub Actions
 
-**Privacidad:** los títulos y demás parámetros se escriben en el cuerpo de un issue. Si el repositorio es público, esos datos serán públicos. No escribas datos secretos ni información privada. Solo los issues creados por **aldo200908-lgtm** cuyo título empiece con **[Motion Studio]** pueden activar el trabajo de renderizado.
+1. Abre **[Render Motion Studio 3.0](https://github.com/aldo200908-lgtm/Motion-Studio/actions/workflows/render.yml)**.
+2. Pulsa **Run workflow**.
+3. Selecciona **hyperframes** como motor, escribe los textos y elige estilo, formato, duración, color y sonido.
+4. Ejecuta y descarga **motion-studio-mp4** en **Artifacts** de la ejecución.
 
-## Qué es, y qué NO es
+Si eliges **classic**, se usa el renderizador antiguo.
 
-Las seis skills de [Barty-Bart/motion-graphics](https://github.com/Barty-Bart/motion-graphics) son flujos de trabajo para **agentes de IA** (incluyen herramientas y guías); no constituyen por sí solas un servicio automático que convierta cualquier prompt en MP4 sin agente.
+## Método 2: Interfaz web en Android
 
-Esta implementación **adapta las direcciones visuales** de explainer-high-energy, explainer-engaging y explainer-default (aquí llamado Clean). Los efectos de sonido son **originales y sintéticos**: no son la librería CC0 ni el análisis de mezcla de la skill original sound-effects. Los módulos motion-broll y object-separation **no están integrados**; necesitan video de entrada y flujos más pesados. No se están ejecutando las seis skills originales.
+1. Activa GitHub Pages desde **Settings → Pages → Deploy from a branch → main → /docs → Save**.
+2. Entra a **https://aldo200908-lgtm.github.io/Motion-Studio/** cuando Pages esté publicado.
+3. Selecciona **HyperFrames**, llena los campos y pulsa **Preparar video en GitHub**.
+4. GitHub abrirá un formulario de Issue prellenado: pulsa **Submit new issue** para autorizar el render.
+5. Al finalizar, GitHub comentará en ese Issue con enlace a la ejecución y a sus Artifacts.
 
-Por tanto, **no convierte una descripción arbitraria en imágenes o personajes generados con IA**: produce motion graphics de textos y formas definidos por el usuario.
+**Aviso de privacidad:** los datos de un Issue son visibles públicamente cuando el repositorio es público. No escribas información privada, tokens ni contraseñas. Solamente los Issues creados por la cuenta propietaria **aldo200908-lgtm** con título iniciado por **[Motion Studio]** pueden activar el render.
 
-## Organización
+## Archivos principales
 
-- .github/workflows/render.yml — workflow manual, automático de prueba e issues del propietario.
-- scripts/motion_v2.py — renderizado determinista con Pillow + FFmpeg.
-- scripts/render.py — renderizador de la versión 1 (conservado).
-- docs/index.html — formulario web estático para celulares.
+- [docs/index.html](docs/index.html): editor móvil estático (sin claves privadas).
+- [scripts/hyperframes_build.py](scripts/hyperframes_build.py): validación de parámetros, creación de HTML+GSAP y efectos de audio.
+- [.github/workflows/render.yml](.github/workflows/render.yml): ejecución real de HyperFrames CLI, FFmpeg y extracción de storyboards.
+- [scripts/motion_v2.py](scripts/motion_v2.py): motor clásico conservado intacto.
 
-## Tecnología
+El HTML se compone por código propio, no se acepta HTML o JavaScript arbitrario a través del formulario. El renderizador usa Node 22+ y FFmpeg; no necesita ejecutar modelos de IA.
 
-Python 3.11, Pillow y FFmpeg en runners ubuntu-latest. No hay secretos ni claves de terceros. Los efectos de sonido son sintetizados por código propio.
+## Licencias y alcance
 
-**Licencias:** inspiraciones visuales basadas en el repositorio Barty-Bart/motion-graphics (MIT). Este proyecto no redistribuye sus fuentes ni su biblioteca de efectos de sonido.
+- HyperFrames: [Apache-2.0](https://github.com/heygen-com/hyperframes/blob/main/LICENSE).
+- GSAP: bajo sus términos de licencia; se usa como dependencia npm.
+- Referencia visual de la versión clásica: [Barty-Bart/motion-graphics](https://github.com/Barty-Bart/motion-graphics), MIT.
 
-## Solución de problemas
-
-Si no aparece el botón **Run workflow**, comprueba que GitHub Actions esté habilitado y que el workflow esté en la rama principal. Para los issues automáticos, GitHub Issues debe estar habilitado. Si la página web aún no carga, activa GitHub Pages con la carpeta **/docs** tal como se indicó anteriormente.
+HyperFrames puede renderizar proyectos mucho más complejos con HTML/JS, media y skills para agentes. **Esta integración no incluye aún generación por IA, scraping de webs, narración TTS ni todos los templates oficiales.** Estos necesitarían pipelines adicionales y comprobaciones de compatibilidad, presupuesto y permisos de recursos.
