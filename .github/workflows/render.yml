@@ -1,4 +1,4 @@
-name: Render Motion Studio 5.0
+name: Render Motion Studio 5.1 Verified
 on:
   workflow_dispatch:
     inputs:
@@ -57,6 +57,7 @@ on:
       - "scripts/verify_v5.py"
 permissions:
   contents: read
+  actions: read
   issues: write
 jobs:
   render:
@@ -84,6 +85,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Verify checked-out branch, commit and v5 sources
+        run: |
+          echo "GITHUB_REF=$GITHUB_REF"
+          echo "GITHUB_SHA=$GITHUB_SHA"
+          echo "CHECKOUT_COMMIT=$(git rev-parse HEAD)"
+          echo "CHECKOUT_BRANCH=$GITHUB_REF_NAME"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -f scripts/kinetic_v5.py
+          test -f scripts/verify_v5.py
+          grep -q 'python scripts/kinetic_v5.py' .github/workflows/render.yml
       - name: Validate request and choose engine
         id: request
         run: python scripts/hyperframes_build.py --mode select
@@ -117,6 +128,23 @@ jobs:
         run: |
           ../node_modules/.bin/hyperframes lint
           ../node_modules/.bin/hyperframes render --output ../output/hyperframes_raw.mp4 --fps 24 --quality standard --workers 1
+      - name: Download previous successful render for duplicate protection
+        if: steps.request.outputs.engine == 'hyperframes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p previous-render
+          python - <<'PY'
+          import json,os,subprocess
+          repo=os.environ["GITHUB_REPOSITORY"]
+          data=json.loads(subprocess.check_output(["gh","api",f"repos/{repo}/actions/workflows/render.yml/runs","-f","per_page=30","-f","status=success"],text=True))
+          previous=next((r for r in data.get("workflow_runs",[]) if r["id"]!=int(os.environ["GITHUB_RUN_ID"]) and r["conclusion"]=="success"),None)
+          if not previous:
+              raise SystemExit("No prior successful render found; cannot verify uniqueness")
+          print("Previous successful workflow run:",previous["id"],"commit:",previous["head_sha"])
+          subprocess.run(["gh","run","download",str(previous["id"]),"--repo",repo,"--name","motion-studio-mp4","--dir","previous-render"],check=True)
+          PY
+          test -s previous-render/video.mp4
       - name: Mix original effects and create storyboards
         if: steps.request.outputs.engine == 'hyperframes'
         env:
@@ -146,9 +174,11 @@ jobs:
       - name: Upload MP4 and storyboard
         uses: actions/upload-artifact@v4
         with:
-          name: motion-studio-mp4
+          name: motion-studio-v5-${{ github.sha }}
           path: |
             output/video.mp4
+            output/motion_v5_*.mp4
+            output/render-report.json
             output/metadata.json
             output/CREDITS.txt
             output/storyboard-*.png
@@ -164,5 +194,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: '✅ Render terminado. Descarga el MP4 y las vistas del storyboard desde **Artifacts → motion-studio-mp4**: ' + url
+              body: '✅ Render terminado. Descarga el MP4 y las vistas del storyboard desde **Artifacts → motion-studio-v5-<commit>**: ' + url
             });
