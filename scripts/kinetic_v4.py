@@ -105,7 +105,7 @@ def build():
         graphic,brands=scene_visual(text,icons)
         key=select_key(text)
         plan.append({"text":text,"brands":brands,"start":round(i*beat,3),"duration":round(beat,3)})
-        scenes.append(f'<section class="scene scene-{i}" data-start="{i*beat:.3f}" data-duration="{beat:.3f}" data-track-index="0"><div class="scene-inner"><div class="scene-kicker">MOTION STUDIO / {i+1:02d}</div>{phrase_html(text,key)}{graphic}<div class="scene-bottom">EXPLICA · ANIMA · IMPACTA</div></div></section>')
+        scenes.append(f'<section id="scene-{i}" class="clip scene scene-{i}" data-start="{i*beat:.3f}" data-duration="{beat:.3f}" data-track-index="0"><div class="scene-inner"><div class="scene-kicker">MOTION STUDIO / {i+1:02d}</div>{phrase_html(text,key)}{graphic}<div class="scene-bottom">EXPLICA · ANIMA · IMPACTA</div></div></section>')
     css=r"""
 *{box-sizing:border-box}html,body{margin:0;width:540px;height:960px;overflow:hidden;background:#070b15}
 body{font-family:Arial,Helvetica,sans-serif;color:#f9fbff}
@@ -117,7 +117,7 @@ body{font-family:Arial,Helvetica,sans-serif;color:#f9fbff}
 .brand-top{position:absolute;top:48px;left:35px;right:35px;z-index:50;display:flex;justify-content:space-between;letter-spacing:3px;font-weight:900;font-size:15px}
 .brand-top span{color:ACCENT}
 .progress{position:absolute;bottom:48px;left:35px;right:35px;height:5px;background:#ffffff22;z-index:60;border-radius:8px}
-.progress-fill{height:100%;width:100%;background:ACCENT;transform:scaleX(0);transform-origin:left;border-radius:8px}
+.progress-fill{height:100%;width:100%;background:ACCENT;transform-origin:left;border-radius:8px}
 .scene{opacity:0;visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:100px 34px 105px;overflow:hidden}
 .scene-inner{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;text-align:center}
 .scene-kicker{font-weight:900;color:ACCENT;font-size:16px;letter-spacing:3px}
@@ -144,13 +144,13 @@ body{font-family:Arial,Helvetica,sans-serif;color:#f9fbff}
 .scene-bottom{font-size:14px;letter-spacing:3px;color:#c5cee0;font-weight:800}
 .wipe{position:absolute;z-index:45;inset:-10%;background:ACCENT;transform:translateX(-115%) rotate(-5deg);pointer-events:none}
 .wipe.alt{background:#fff;z-index:44}
-.transition-circle{position:absolute;z-index:46;left:50%;top:50%;width:1200px;height:1200px;margin-left:-600px;margin-top:-600px;background:#0d1526;border-radius:50%;transform:scale(0);pointer-events:none}
+.transition-circle{position:absolute;z-index:46;left:50%;top:50%;width:1200px;height:1200px;margin-left:-600px;margin-top:-600px;background:#0d1526;border-radius:50%;pointer-events:none}
 """
     css=css.replace("ACCENT",cfg["accent"])
     js=[
         'window.__timelines=window.__timelines||{};',
         'const tl=gsap.timeline({paused:true});',
-        f'tl.to(".progress-fill",{{scaleX:1,duration:{duration},ease:"none"}},0);',
+        f'tl.fromTo(".progress-fill",{{scaleX:0}},{{scaleX:1,duration:{duration},ease:"none"}},0);',
         f'tl.to(".grid-bg",{{x:-90,y:75,rotation:4,duration:{duration},ease:"none"}},0);',
         f'tl.to(".ambient",{{scale:1.25,x:60,y:-35,duration:{duration},ease:"sine.inOut"}},0);',
         f'tl.to(".orb",{{x:180,y:-110,scale:1.25,duration:{duration},ease:"sine.inOut"}},0);',
