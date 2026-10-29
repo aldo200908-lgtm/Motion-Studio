@@ -56,8 +56,9 @@ def split_script(cfg):
             expanded.append(clause)
     # Avoid scenes too short to read. Maximum 5 for a 6-20 sec video.
     parts = [s[:125] for s in expanded if s.strip()]
-    if len(parts) > 5:
-        parts = parts[:4] + ["; ".join(parts[4:])[:125]]
+    max_scenes = max(2, min(5, int(cfg.get("duration", 12)) // 2))
+    if len(parts) > max_scenes:
+        parts = parts[:max_scenes-1] + ["; ".join(parts[max_scenes-1:])[:125]]
     return parts or [cfg["title"]]
 
 
